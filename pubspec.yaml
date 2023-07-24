@@ -1,0 +1,24 @@
+name: domine
+description: Search and purchase domains right from the terminal.
+version: 1.0.0
+repository: https://github.com/breitburg/domine
+
+environment:
+  sdk: ^3.0.6
+
+dependencies:
+  args: ^2.4.2
+  async: ^2.11.0
+  cli_spinner: ^1.0.4
+  http: ^1.1.0
+  tint: ^2.0.1
+
+dev_dependencies:
+  lints: ^2.0.0
+
+executables:
+  domine:
+
+platforms:
+  macos:
+  linux:
