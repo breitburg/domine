@@ -2,59 +2,11 @@ import 'dart:convert';
 
 import 'package:args/command_runner.dart';
 import 'package:cli_spinner/cli_spinner.dart';
+import 'package:domine/constants.dart';
 import 'package:domine/misc.dart';
 import 'package:domine/models.dart';
 import 'package:http/http.dart';
 import 'package:tint/tint.dart';
-
-const asteriskTLDs = [
-  'com',
-  'org',
-  'net',
-  'info',
-  'biz',
-  'co',
-  'us',
-  'io',
-  'me',
-  'top',
-  'eu',
-  'ca',
-  'tv',
-  'xyz',
-  'site',
-  'club',
-  'link',
-  'store',
-  'de',
-  'cn',
-  'ru',
-  'nl',
-  'au',
-  'in',
-  'fr',
-  'ch',
-  'jp',
-  'it',
-  'be',
-  'br',
-  'pl',
-  'se',
-  'es',
-  'nz',
-  'mx',
-  'at',
-  'dk',
-  'no',
-  'fi',
-  'pt',
-  'gr',
-  'ar',
-  'ie',
-  'tr',
-  'ro',
-  'hu'
-];
 
 class SearchCommand extends Command {
   @override
@@ -71,7 +23,9 @@ class SearchCommand extends Command {
 
   @override
   void run() async {
-    final input = argResults?.rest ?? [];
+    final input = (argResults?.rest ?? []).map(
+      (e) => e.replaceAll('"', '').trim(),
+    );
     if (input.isEmpty) return print('Domains are empty.');
 
     final spinner = Spinner.type('Checking availability...', SpinnerType.dots)
@@ -85,11 +39,7 @@ class SearchCommand extends Command {
         final name = parts.first;
         final tld = parts.sublist(1).join('.');
 
-        futures.add(check(
-          name,
-          tlds:
-              tld == '*' ? asteriskTLDs : [variant.replaceFirst('$name.', '')],
-        ));
+        futures.add(check(name, tlds: tld == '*' ? asteriskTLDs : [tld]));
       }
     }
 
@@ -156,6 +106,10 @@ Future<List<CheckedDomain>> check(String name,
 
   return [
     for (final check in decoded)
-      CheckedDomain(name, check['tld'], available: !check['isRegistered'])
+      CheckedDomain(
+        name,
+        check['tld'],
+        available: !(check['isRegistered'] ?? true),
+      )
   ];
 }
