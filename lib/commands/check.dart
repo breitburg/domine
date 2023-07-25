@@ -47,7 +47,7 @@ class SearchCommand extends Command {
     final results = [
       for (final check in checks) ...[for (final domain in check) domain]
     ]..sort();
-    final successes = results.where((e) => e.available);
+    final successes = results.where((e) => e.status == CheckStatus.available);
 
     spinner
       ..updateMessage(
@@ -61,7 +61,11 @@ class SearchCommand extends Command {
 
     table([
       for (final domain in results)
-        '${domain.available ? '✔'.green().bold() : '⨯'.red().bold()} ${domain.name}.${domain.tld}'
+        '${(switch(domain.status) {
+          CheckStatus.available => '✔'.green(),
+          CheckStatus.taken => '⨯'.red(),
+          _ => '⁇'.blue(),
+        }).bold()} ${domain.name}.${domain.tld}'
     ]);
   }
 }
@@ -109,7 +113,11 @@ Future<List<CheckedDomain>> check(String name,
       CheckedDomain(
         name,
         check['tld'],
-        available: !(check['isRegistered'] ?? true),
+        status: switch (check['isRegistered']) {
+          true => CheckStatus.taken,
+          false => CheckStatus.available,
+          _ => CheckStatus.unknown,
+        },
       )
   ];
 }
