@@ -1,11 +1,11 @@
 # Domine
 
-Search domains with regular expressions. Insert numbers, letters, and any TLDs in one query with Domine. It uses reverse-engineered [Instant Domain Search](https://instantdomainsearch.com/) API, so it could break at any time.
+Search domains with expressions. Insert numbers, letters, and any TLDs in one query with Domine. It uses reverse-engineered [Instant Domain Search](https://instantdomainsearch.com/) API, so it could break at any time.
 
 ```console
-$ domine check "alltlds.*" "[1-12]am.co" "[a-z]-class.studio"
-28 domains are available 
-✔ alltlds.biz   ✔ 2am.co    ✔ w-class.studio    ...
+$ domine check "example.*" "[1-12]am.co" "pu[a-z]r.studio"
+44 domains are available
+✔ example.se   ✔ 2am.co    ✔ pulr.studio    ...
 ```
 
 ## Features

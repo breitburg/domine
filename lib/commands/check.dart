@@ -67,8 +67,11 @@ class SearchCommand extends Command {
   List<String> get aliases => ['c'];
 
   @override
+  String get invocation => 'check <query>';
+
+  @override
   void run() async {
-    final input = argResults?.arguments ?? [];
+    final input = argResults?.rest ?? [];
     if (input.isEmpty) return print('Domains are empty.');
 
     final spinner = Spinner.type('Checking availability...', SpinnerType.dots)
