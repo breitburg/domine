@@ -1,3 +1,17 @@
+import 'package:domine/models.dart';
+import 'package:tint/tint.dart';
+
+void domainTable(List<CheckedDomain> domains) {
+  table([
+    for (final domain in domains..sort())
+      '${(switch (domain.status) {
+        CheckStatus.available => '✔'.green(),
+        CheckStatus.taken => '⨯'.red(),
+        _ => '⁇'.blue(),
+      }).bold()} $domain'
+  ]);
+}
+
 void table(List<String> input) {
   const int columnCount = 5;
   int remaining = columnCount - (input.length % columnCount), i;

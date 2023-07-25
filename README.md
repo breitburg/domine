@@ -39,9 +39,8 @@ If you'd like to contribute directly to the codebase, you can follow these steps
 1. Fork the repository and clone it to your local machine.
 2. Create a new branch for your feature or bug fix: `git checkout -b my-branch`.
 3. Make the necessary changes and additions.
-4. Run the tests to ensure they pass: `dart test`.
-5. Commit your changes: `git commit -m "Add feature or bug fix"`.
-6. Push to your branch: `git push origin my-branch`.
-7. Open a pull request on the main repository.
+4. Commit your changes: `git commit -m "Add feature or bug fix"`.
+5. Push to your branch: `git push origin my-branch`.
+6. Open a pull request on the main repository.
 
 Please ensure that your contributions align with the project's coding style and guidelines. Your involvement helps improve Domine for everyone.

@@ -1,4 +1,5 @@
 import 'package:args/command_runner.dart';
+import 'package:domine/commands/brainstorm.dart';
 import 'package:domine/commands/check.dart';
 
 void main(List<String> arguments) async {
@@ -7,6 +8,8 @@ void main(List<String> arguments) async {
     'Search and purchase domains right from the terminal.',
   );
 
-  runner.addCommand(SearchCommand());
+  runner.addCommand(CheckCommand());
+  runner.addCommand(BrainstormCommand());
+
   runner.run(arguments);
 }

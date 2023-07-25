@@ -4,6 +4,8 @@ class CheckedDomain implements Comparable<CheckedDomain> {
 
   const CheckedDomain(this.name, this.tld, {required this.status});
 
+  bool get available => status == CheckStatus.available;
+
   @override
   String toString() => '$name.$tld';
 

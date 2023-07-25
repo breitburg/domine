@@ -41,6 +41,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.2"
+  dart_openai:
+    dependency: "direct main"
+    description:
+      name: dart_openai
+      sha256: "707f6975454513f4a6197125b5a0fbe92ab7cbe4b8ea9111e529a09d7a3ce0c3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
+  fetch_api:
+    dependency: transitive
+    description:
+      name: fetch_api
+      sha256: "7896632eda5af40c4459d673ad601df21d4c3ae6a45997e300a92ca63ec9fe4c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  fetch_client:
+    dependency: transitive
+    description:
+      name: fetch_client
+      sha256: "83c07b07a63526a43630572c72715707ca113a8aa3459efbc7b2d366b79402af"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   http:
     dependency: "direct main"
     description:
@@ -57,6 +81,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  js:
+    dependency: transitive
+    description:
+      name: js
+      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.7"
   lints:
     dependency: "direct dev"
     description:
