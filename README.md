@@ -6,15 +6,19 @@ Search domains with expressions. Insert numbers, letters, and any TLDs in one qu
 
 ## Installation
 
-If you have Dart installed, run the following command in your terminal:
+To install Domine without any additional steps, you can use a Docker:
+
+```console
+$ docker run breitburg/domine check "example [1-12]am.co"
+```
+
+Alternatively, if you have Dart installed, you can run the following command in your terminal:
 
 ```console
 $ dart pub global activate domine
 ```
 
-This will install all the necessary dependencies and make `domine` accessible.
-
-Another option for installation involves obtaining the binary file from the GitHub releases.
+This command will install all the required dependencies and make `$ domine` accessible.
 
 ## Features
 
