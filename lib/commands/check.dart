@@ -2,10 +2,59 @@ import 'dart:convert';
 
 import 'package:args/command_runner.dart';
 import 'package:cli_spinner/cli_spinner.dart';
+import 'package:domine/misc.dart';
+import 'package:domine/models.dart';
 import 'package:http/http.dart';
 import 'package:tint/tint.dart';
 
-const usualTlds = ['com', 'org', 'net', 'me', 'co', 'app', 'io', 'dev'];
+const asteriskTLDs = [
+  'com',
+  'org',
+  'net',
+  'info',
+  'biz',
+  'co',
+  'us',
+  'io',
+  'me',
+  'top',
+  'eu',
+  'ca',
+  'tv',
+  'xyz',
+  'site',
+  'club',
+  'link',
+  'store',
+  'de',
+  'cn',
+  'ru',
+  'nl',
+  'au',
+  'in',
+  'fr',
+  'ch',
+  'jp',
+  'it',
+  'be',
+  'br',
+  'pl',
+  'se',
+  'es',
+  'nz',
+  'mx',
+  'at',
+  'dk',
+  'no',
+  'fi',
+  'pt',
+  'gr',
+  'ar',
+  'ie',
+  'tr',
+  'ro',
+  'hu'
+];
 
 class SearchCommand extends Command {
   @override
@@ -22,9 +71,8 @@ class SearchCommand extends Command {
     final input = argResults?.arguments ?? [];
     if (input.isEmpty) return print('Domains are empty.');
 
-    final spinner =
-        Spinner.type('Checking domains availability...', SpinnerType.boxCircle)
-          ..start();
+    final spinner = Spinner.type('Checking availability...', SpinnerType.dots)
+      ..start();
 
     final futures = <Future>[];
 
@@ -36,7 +84,8 @@ class SearchCommand extends Command {
 
         futures.add(check(
           name,
-          tlds: tld == '*' ? usualTlds : [variant.replaceFirst('$name.', '')],
+          tlds:
+              tld == '*' ? asteriskTLDs : [variant.replaceFirst('$name.', '')],
         ));
       }
     }
@@ -106,65 +155,4 @@ Future<List<CheckedDomain>> check(String name,
     for (final check in decoded)
       CheckedDomain(name, check['tld'], available: !check['isRegistered'])
   ];
-}
-
-class CheckedDomain implements Comparable<CheckedDomain> {
-  final String name, tld;
-  final bool available;
-
-  const CheckedDomain(this.name, this.tld, {required this.available});
-
-  @override
-  String toString() => '$name.$tld (available: $available)';
-
-  @override
-  int compareTo(CheckedDomain other) => available && !other.available ? -1 : 1;
-}
-
-void table(List<String> input) {
-  const int columnCount = 4;
-  int remaining = columnCount - (input.length % columnCount), i;
-  if (remaining < columnCount) {
-    for (i = 0; i < remaining; i++) {
-      input.add('');
-    }
-  }
-  for (i = 0; i < input.length; i += columnCount) {
-    String row = '';
-    for (int j = 0; j < columnCount; j++) {
-      if (input[i + j] == '') continue;
-      row += '${input[i + j]}\t';
-    }
-    print(row);
-  }
-}
-
-List<String> expand(String input) {
-  final matches = RegExp(r'\[(.*?)\]').firstMatch(input);
-  if (matches == null) return [input];
-
-  final results = <String>[];
-  final range = matches.group(1)!.split('-');
-
-  // Check if the range is numeric or character
-  if (range[0].codeUnitAt(0) >= 48 && range[0].codeUnitAt(0) <= 57) {
-    int lowerBound = int.parse(range[0]);
-    int upperBound = int.parse(range[1]);
-
-    for (var i = lowerBound; i <= upperBound; i++) {
-      var newInput = input.replaceFirst(matches.group(0)!, i.toString());
-      results.addAll(expand(newInput));
-    }
-  } else {
-    int lowerBound = range[0].codeUnitAt(0);
-    int upperBound = range[1].codeUnitAt(0);
-
-    for (var i = lowerBound; i <= upperBound; i++) {
-      var expanded = String.fromCharCode(i);
-      var newInput = input.replaceFirst(matches.group(0)!, expanded);
-      results.addAll(expand(newInput));
-    }
-  }
-
-  return results;
 }
