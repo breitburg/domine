@@ -9,21 +9,20 @@ Search domains with expressions. Insert numbers, letters, and any TLDs in one qu
 
 ## Installation
 
-To install Domine without any additional steps, you can use Docker:
+To use Domine without any installation, you can use Docker:
 
 ```console
-$ docker run breitburg/domine check "[1-12]am.co"
+$ docker run --rm --tty breitburg/domine check "example.com" "[1-12]am.co"
 ```
 
 Alternatively, if you have Dart installed, you can run the following command in your terminal:
 
 ```console
 $ dart pub global activate domine
+$ domine check "example.com" "[1-12]am.co"
 ```
 
 This command will install all the required dependencies and make `domine` accessible.
-
-> Shout out to [Robert-Jan Keizer's `domainchecker`](https://github.com/KeizerDev/domainchecker) for some inspiration.
 
 ## Usage
 
@@ -52,6 +51,8 @@ Check the entire alphabet (or any other range of letters) effortlessly with the 
 #### Popular TLDs at Once
 
 Check multiple popular TLDs simultaneously. Use the asterisk symbol with the `domine check "domine.*"` command to verify domains such as `domine.com`, `domine.org`, and so forth.
+
+> Shout out to [Robert-Jan Keizer's `domainchecker`](https://github.com/KeizerDev/domainchecker) for inspiration.
 
 #### Multiple Queries
 
