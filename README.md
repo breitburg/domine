@@ -34,10 +34,12 @@ You can always obtain information about commands by running `domine help`.
 The `check` command allows you to perform domain checks on multiple domains simultaneously by including multiple queries:
 
 ```console
-$ domine check <query1> <query2> ...
+$ domine check "<query1>" "<query2>" ...
 ```
 
 By utilizing expressions, you can check the availability and status of multiple domains at once.
+
+It also supports headless mode. If you need to write all the available domains in a file, you can use `domine check "<query>" > domains.txt`.
 
 #### Numbers
 
@@ -61,14 +63,16 @@ Combine different patterns using the `domine check "l[a-z]n[1-2].*"` command to 
 
 ### AI
 
-> Work in progress
+> Unstable. Work in progress.
 
-You can use AI to generate ideas for domains and automatically check their availability. All you need is an OpenAI API key, which you can provide using the `-k` or `--openai-key` option or by setting it as an environment variable named `OPENAI_KEY`.
+You can use AI to generate ideas for domains and automatically check their availability.
+
+All you need is an OpenAI API key, which you can provide using the `-k` or `--openai-key` option or by setting it as an environment variable named `OPENAI_KEY`.
 
 When you're ready, just use the following synax:
 
 ```console
-$ domine brainstorm <prompt>
+$ domine brainstorm "<prompt>"
 ```
 
 Also, you can specify the model you want to use by providing the `-m <name>` or `--model <name>` option.
