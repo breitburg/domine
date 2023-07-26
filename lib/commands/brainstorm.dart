@@ -35,6 +35,12 @@ class BrainstormCommand extends Command {
       help: 'GPT model',
       defaultsTo: 'gpt-3.5-turbo',
     );
+    argParser.addOption(
+      'target',
+      abbr: 't',
+      help: 'How many available domains the model should find?',
+      defaultsTo: '10',
+    );
   }
 
   @override
@@ -42,11 +48,18 @@ class BrainstormCommand extends Command {
     final results = argResults!;
     OpenAI.apiKey = Platform.environment['OPENAI_KEY'] ?? results['openai-key'];
 
-    await _brainstorm(results.rest.join(' '), model: results['model']);
+    await _brainstorm(
+      results.rest.join(' '),
+      model: results['model'],
+      target: int.parse(results['target']),
+    );
   }
 
-  Future<void> _brainstorm(String prompt, {required String model}) async {
+  Future<void> _brainstorm(String prompt,
+      {required String model, required int target}) async {
     domainTable(_searches);
+
+    if (_searches.where((e) => e.available).length >= target) return;
 
     final spinner =
         Spinner.type('Synthesizing domains with GPT...', SpinnerType.dots)
@@ -103,11 +116,12 @@ class BrainstormCommand extends Command {
     }
 
     spinner
-      ..updateMessage('Currently, ${_searches.length} domains have been checked'
-          .dim()
-          .underline())
+      ..updateMessage(
+          'Currently, ${_searches.length} domains have been checked (${_searches.where((e) => e.available).length} are available)'
+              .dim()
+              .underline())
       ..stop();
 
-    await _brainstorm(prompt, model: model);
+    await _brainstorm(prompt, model: model, target: target);
   }
 }

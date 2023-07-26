@@ -43,7 +43,7 @@ It also supports headless mode. If you need to write all the available domains i
 
 #### Numbers
 
-Iterate through any number using the `domine check "[1-12]am.com"` command to verify domains like `1am.com`, `2am.com`, and so on.
+Iterate through any numbers using the `domine check "[1-12]am.com"` command to verify domains like `1am.com`, `2am.com`, and so on.
 
 #### Letters
 
@@ -65,7 +65,7 @@ Combine different patterns using the `domine check "l[a-z]n[1-2].*"` command to 
 
 > Unstable. Work in progress.
 
-You can use AI to generate ideas for domains and automatically check their availability.
+You can use AI to generate ideas for domains and automatically check their availability. You can specify the target amount of available domains to be found using the `-t` or `--target <number>` option.
 
 All you need is an OpenAI API key, which you can provide using the `-k` or `--openai-key` option or by setting it as an environment variable named `OPENAI_KEY`.
 
@@ -76,7 +76,6 @@ $ domine brainstorm "<prompt>"
 ```
 
 Also, you can specify the model you want to use by providing the `-m <name>` or `--model <name>` option.
-
 
 ## Contribution
 
