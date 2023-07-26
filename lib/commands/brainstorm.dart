@@ -71,9 +71,9 @@ class BrainstormCommand extends Command {
         OpenAIChatCompletionChoiceMessageModel(
           role: OpenAIChatMessageRole.system,
           content: [
-            'You are a creative AI that task is to find domains for your client.',
-            'Example queries: superbakery.com, nudes4sale.co',
-            'Domain search prompt: $prompt'
+            'You are a creative AI whose task is to find domains for your clients.',
+            'Example domain ideas: superbakery.com, nudes4sale.co, etc.',
+            'Your domain searching task is: $prompt'
           ].join('\n'),
         ),
         if (_searches.isNotEmpty)
@@ -89,11 +89,10 @@ class BrainstormCommand extends Command {
           name: 'checkDomains',
           parameters: [
             OpenAIFunctionProperty.array(
-              name: 'queries',
-              description: 'Must be at least 10 queries',
+              name: 'domains',
               items: OpenAIFunctionProperty.string(
                 name: 'domain',
-                description: 'Name and a TLD (example: google.com, nesper.co)',
+                description: 'Full domain name (e.g. google.com, nesper.co)',
               ),
             )
           ],
@@ -101,23 +100,22 @@ class BrainstormCommand extends Command {
       ],
     );
     final message = response.choices.first.message;
-    final queries =
-        List<String>.from(message.functionCall!.arguments!['queries'].where(
-      (e) =>
-          e.contains('.') &&
-          !e.endsWith('.') &&
-          !_searches.any((v) => v.toString() == e),
-    ));
+    final candidates =
+        List<String>.from(message.functionCall!.arguments!['domains'] ?? [])
+            .where((e) =>
+                e.contains('.') &&
+                !e.endsWith('.') &&
+                !_searches.any((v) => v.toString() == e));
 
-    if (queries.isNotEmpty) {
-      spinner.updateMessage('Checking ${queries.length} new domains...');
-      final checks = await batchCheck(queries);
+    if (candidates.isNotEmpty) {
+      spinner.updateMessage('Checking ${candidates.length} new domains...');
+      final checks = await batchCheck(candidates);
       _searches.addAll(checks);
     }
 
     spinner
       ..updateMessage(
-          'Currently, ${_searches.length} domains have been checked (${_searches.where((e) => e.available).length} are available)'
+          '${_searches.where((e) => e.available).length} available domains out of ${_searches.length} checked'
               .dim()
               .underline())
       ..stop();
