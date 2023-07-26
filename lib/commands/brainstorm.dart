@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:cli_spinner/cli_spinner.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:domine/checker.dart';
 import 'package:domine/misc.dart';
 import 'package:domine/models.dart';
+import 'package:domine/spinner.dart';
 import 'package:tint/tint.dart';
 
 class BrainstormCommand extends Command {
@@ -82,8 +82,7 @@ class BrainstormCommand extends Command {
 
     if (_searches.where((e) => e.available).length >= limit) return;
 
-    final spinner = Spinner.type('Synthesizing with GPT...', SpinnerType.dots)
-      ..start();
+    final spinner = Spinner('Synthesizing with GPT...')..start();
 
     final response = await OpenAI.instance.chat.create(
       model: model,
@@ -92,7 +91,7 @@ class BrainstormCommand extends Command {
           role: OpenAIChatMessageRole.system,
           content: [
             'You are a creative AI whose task is to find domains for your clients.',
-            'Example domain ideas: superbakery.com, nudes4sale.co, etc.',
+            'Example domain ideas: superbakery.com, nudes4sale.app, etc.',
             'Your domain searching task is: $prompt'
           ].join('\n'),
         ),
@@ -109,11 +108,9 @@ class BrainstormCommand extends Command {
       functions: [
         OpenAIFunctionModel.withParameters(
           name: 'checkDomains',
-          description: 'Check as many domains as you want at once',
           parameters: [
             OpenAIFunctionProperty.array(
               name: 'domains',
-              description: 'Must contain at least 50 domains to check',
               items: OpenAIFunctionProperty.string(
                 name: 'domain',
                 description: 'Full domain name (e.g. google.com, nesper.co)',
@@ -133,17 +130,17 @@ class BrainstormCommand extends Command {
                 !_searches.any((v) => v.toString() == e));
 
     if (candidates.isNotEmpty) {
-      spinner.updateMessage('Checking ${candidates.length} new domains...');
+      spinner.text = 'Checking ${candidates.length} new domains...';
       final checks = await batchCheck(candidates);
       _searches.addAll(checks);
     }
+    spinner.stop();
 
-    spinner
-      ..updateMessage(
-          '${_searches.where((e) => e.available).length} available domains out of ${_searches.length} checked'
-              .dim()
-              .underline())
-      ..stop();
+    stdout.writeln(
+      '${_searches.where((e) => e.available).length} available domains out of ${_searches.length} checked'
+          .dim()
+          .underline(),
+    );
 
     await _brainstorm(
       prompt,

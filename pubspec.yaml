@@ -12,7 +12,6 @@ environment:
 
 dependencies:
   args: ^2.4.2
-  cli_spinner: ^1.0.4
   dart_openai: ^4.0.0
   http: ^1.1.0
   tint: ^2.0.1

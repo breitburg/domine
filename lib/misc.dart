@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:domine/models.dart';
 import 'package:tint/tint.dart';
 
@@ -26,7 +28,7 @@ void table(List<String> input) {
       if (input[i + j] == '') continue;
       row += '${input[i + j]}\t';
     }
-    print(row);
+    stdout.writeln(row);
   }
 }
 

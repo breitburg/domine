@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:args/command_runner.dart';
 import 'package:domine/commands/brainstorm.dart';
 import 'package:domine/commands/check.dart';
+import 'package:domine/spinner.dart';
 
 void main(List<String> arguments) async {
   final runner = CommandRunner(

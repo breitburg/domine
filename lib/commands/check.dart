@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:cli_spinner/cli_spinner.dart';
 import 'package:domine/checker.dart';
 import 'package:domine/misc.dart';
+import 'package:domine/spinner.dart';
 import 'package:tint/tint.dart';
 
 class CheckCommand extends Command {
@@ -24,9 +24,9 @@ class CheckCommand extends Command {
     final input = (argResults?.rest ?? []).map(
       (e) => e.replaceAll('"', '').trim(),
     );
-    if (input.isEmpty) return print('Domains are empty.');
+    if (input.isEmpty) return stdout.writeln('Domains are empty.');
 
-    final spinner = Spinner.type('Checking availability...', SpinnerType.dots);
+    final spinner = Spinner('Checking availability...');
 
     if (stdout.hasTerminal) {
       spinner.start();
@@ -36,20 +36,17 @@ class CheckCommand extends Command {
     final successes = results.where((e) => e.available);
 
     if (stdout.hasTerminal) {
-      spinner
-        ..updateMessage(
-          (successes.isNotEmpty
-                  ? '${successes.length} domains are available'
-                  : 'All domains have been taken')
-              .dim()
-              .underline(),
-        )
-        ..stop();
+      spinner.stop();
+      stdout.writeln((successes.isNotEmpty
+              ? '${successes.length} ${successes.length > 1 ? 'domains are' : 'domain is'} available'
+              : 'All domains have been taken')
+          .dim()
+          .underline());
 
       domainTable(results);
       return;
     }
 
-    print(successes.join('\n'));
+    stdout.writeln(successes.join('\n'));
   }
 }
