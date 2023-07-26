@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:args/command_runner.dart';
 import 'package:cli_spinner/cli_spinner.dart';
 import 'package:domine/checker.dart';
@@ -24,22 +26,30 @@ class CheckCommand extends Command {
     );
     if (input.isEmpty) return print('Domains are empty.');
 
-    final spinner = Spinner.type('Checking availability...', SpinnerType.dots)
-      ..start();
+    final spinner = Spinner.type('Checking availability...', SpinnerType.dots);
+
+    if (stdout.hasTerminal) {
+      spinner.start();
+    }
 
     final results = await batchCheck(input);
     final successes = results.where((e) => e.available);
 
-    spinner
-      ..updateMessage(
-        (successes.isNotEmpty
-                ? '${successes.length} domains are available'
-                : 'All domains have been taken')
-            .dim()
-            .underline(),
-      )
-      ..stop();
+    if (stdout.hasTerminal) {
+      spinner
+        ..updateMessage(
+          (successes.isNotEmpty
+                  ? '${successes.length} domains are available'
+                  : 'All domains have been taken')
+              .dim()
+              .underline(),
+        )
+        ..stop();
 
-    domainTable(results);
+      domainTable(results);
+      return;
+    }
+
+    print(successes.join('\n'));
   }
 }

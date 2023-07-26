@@ -94,7 +94,7 @@ class BrainstormCommand extends Command {
     ));
 
     if (queries.isNotEmpty) {
-      spinner.updateMessage('Checking ${queries.length} domains...');
+      spinner.updateMessage('Checking ${queries.length} new domains...');
       final checks = await batchCheck(queries);
       _searches.addAll(checks);
     }
