@@ -26,20 +26,34 @@ class BrainstormCommand extends Command {
   BrainstormCommand() {
     argParser.addOption(
       'openai-key',
-      abbr: 'k',
-      help: 'OpenAI API key',
+      help: 'Define the OpenAI API key.',
     );
     argParser.addOption(
       'model',
-      abbr: 'm',
-      help: 'GPT model',
+      help: 'Specify the GPT model.',
       defaultsTo: 'gpt-3.5-turbo',
     );
     argParser.addOption(
-      'target',
-      abbr: 't',
-      help: 'How many available domains the model should find?',
+      'limit',
+      abbr: 'l',
+      help:
+          'Specify the maximum number of available domains the model should find.',
+      valueHelp: 'number',
       defaultsTo: '10',
+    );
+    argParser.addSeparator('Model Settings');
+    argParser.addOption(
+      'temperature',
+      help: 'Specify the model temperature.',
+      valueHelp: 'from 0.0 to 2.0',
+      defaultsTo: '1.0',
+    );
+    argParser.addOption(
+      'frequency-penalty',
+      help:
+          'Specify the model frequency penalty to decrease the likelihood of the model repeating the same line verbatim.',
+      valueHelp: 'from 0.0 to 2.0',
+      defaultsTo: '0.0',
     );
   }
 
@@ -51,19 +65,25 @@ class BrainstormCommand extends Command {
     await _brainstorm(
       results.rest.join(' '),
       model: results['model'],
-      target: int.parse(results['target']),
+      limit: int.parse(results['limit']),
+      temperature: double.parse(results['temperature']),
+      frequencyPenalty: double.parse(results['frequency-penalty']),
     );
   }
 
-  Future<void> _brainstorm(String prompt,
-      {required String model, required int target}) async {
+  Future<void> _brainstorm(
+    String prompt, {
+    required String model,
+    required int limit,
+    required double temperature,
+    required double frequencyPenalty,
+  }) async {
     domainTable(_searches);
 
-    if (_searches.where((e) => e.available).length >= target) return;
+    if (_searches.where((e) => e.available).length >= limit) return;
 
-    final spinner =
-        Spinner.type('Synthesizing domains with GPT...', SpinnerType.dots)
-          ..start();
+    final spinner = Spinner.type('Synthesizing with GPT...', SpinnerType.dots)
+      ..start();
 
     final response = await OpenAI.instance.chat.create(
       model: model,
@@ -78,18 +98,22 @@ class BrainstormCommand extends Command {
         ),
         if (_searches.isNotEmpty)
           OpenAIChatCompletionChoiceMessageModel(
-            functionName: 'checkDomains',
             role: OpenAIChatMessageRole.function,
+            functionName: 'checkDomains',
             content: 'Already been checked: ${_searches.join(', ')}',
           )
       ],
+      frequencyPenalty: frequencyPenalty,
+      temperature: temperature,
       functionCall: FunctionCall.forFunction('checkDomains'),
       functions: [
         OpenAIFunctionModel.withParameters(
           name: 'checkDomains',
+          description: 'Check as many domains as you want at once',
           parameters: [
             OpenAIFunctionProperty.array(
               name: 'domains',
+              description: 'Must contain at least 50 domains to check',
               items: OpenAIFunctionProperty.string(
                 name: 'domain',
                 description: 'Full domain name (e.g. google.com, nesper.co)',
@@ -99,6 +123,7 @@ class BrainstormCommand extends Command {
         ),
       ],
     );
+
     final message = response.choices.first.message;
     final candidates =
         List<String>.from(message.functionCall!.arguments!['domains'] ?? [])
@@ -120,6 +145,12 @@ class BrainstormCommand extends Command {
               .underline())
       ..stop();
 
-    await _brainstorm(prompt, model: model, target: target);
+    await _brainstorm(
+      prompt,
+      model: model,
+      limit: limit,
+      temperature: temperature,
+      frequencyPenalty: frequencyPenalty,
+    );
   }
 }

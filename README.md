@@ -66,9 +66,9 @@ Combine different patterns using the `domine check "l[a-z]n[1-2].*"` command to 
 
 > Unstable. Work in progress.
 
-You can use AI to generate ideas for domains and automatically check their availability. You can specify the target amount of available domains to be found using the `-t` or `--target <number>` option.
+You can use AI to generate ideas for domains and automatically check their availability. You can specify the maximum amount of available domains to be found using the `-l` or `--limit <number>` option.
 
-All you need is an OpenAI API key, which you can provide using the `-k` or `--openai-key` option or by setting it as an environment variable named `OPENAI_KEY`.
+All you need is an OpenAI API key, which you can provide using the `--openai-key` option or by setting it as an environment variable named `OPENAI_KEY`.
 
 When you're ready, just use the following synax:
 
@@ -76,7 +76,7 @@ When you're ready, just use the following synax:
 $ domine brainstorm "<prompt>"
 ```
 
-Also, you can specify the model you want to use by providing the `-m <name>` or `--model <name>` option.
+Also, you can specify the model you want to use by providing the `--model <name>` option.
 
 ## Contribution
 
