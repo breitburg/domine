@@ -18,6 +18,9 @@ class BrainstormCommand extends Command {
   String get name => 'brainstorm';
 
   @override
+  bool get hidden => true;
+
+  @override
   List<String> get aliases => ['b'];
 
   BrainstormCommand() {

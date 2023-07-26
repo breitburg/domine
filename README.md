@@ -4,13 +4,8 @@ Search domains with expressions. Insert numbers, letters, and any TLDs in one qu
 
 ![Gif Preview](https://github.com/breitburg/domine/assets/25728414/71f50a81-ab89-426a-a0ad-500ad083b662)
 
-## Features
-
-- **Numbers:** Interate from 1 to 12 with `domine check "[1-12]am.com"` to check domains such as `1am.com`, `2am.com`...
-- **Letters:** Check the whole alphabet with `domine check "letter-[a-z].com"` for `letter-a.com`, `letter-b.com`...
-- **Popular TLDs at once:** Use the asterisk symbol to check multiple TLDs at once with `domine check "domine.*"` for `domine.com`, `domine.org`...
-- **Multiple queries:** Ask Domine to make multiple queries at one command `domine check "[1-12]am.com" "letter-[a-z].com"`.
-- **Combine expressions:** Use `domine check "l[a-z]n[1-2].*"` to get `lan1.com`, `lan2.com`...
+> **Disclaimer**  
+> Domine is good at giving accurate data about registered domains, but it may not have up-to-date information on unregistered domains. If you want the most reliable information, use [ICANN Lookup](https://lookup.icann.org/) for the right details.
 
 ## Installation
 
@@ -29,6 +24,55 @@ $ dart pub global activate domine
 This command will install all the required dependencies and make `domine` accessible.
 
 > Shout out to [Robert-Jan Keizer's `domainchecker`](https://github.com/KeizerDev/domainchecker) for some inspiration.
+
+## Usage
+
+You can always obtain information about commands by running `domine help`.
+
+### Check
+
+The `check` command allows you to perform domain checks on multiple domains simultaneously by including multiple queries:
+
+```console
+$ domine check <query1> <query2> ...
+```
+
+By utilizing expressions, you can check the availability and status of multiple domains at once.
+
+#### Numbers
+
+Iterate through any number using the `domine check "[1-12]am.com"` command to verify domains like `1am.com`, `2am.com`, and so on.
+
+#### Letters
+
+Check the entire alphabet (or any other range of letters) effortlessly with the `domine check "letter-[a-z].com"` command to validate domains like `letter-a.com`, `letter-b.com`, and more.
+
+#### Popular TLDs at Once
+
+Check multiple popular TLDs simultaneously. Use the asterisk symbol with the `domine check "domine.*"` command to verify domains such as `domine.com`, `domine.org`, and so forth.
+
+#### Multiple Queries
+
+Perform multiple domain queries with a single command using the syntax `domine check "[1-12]am.com" "letter-[a-z].com"`.
+
+#### Combine Expressions
+
+Combine different patterns using the `domine check "l[a-z]n[1-2].*"` command to obtain domains like `lan1.com`, `lan2.com`, `lbn1.com` and more.
+
+### AI
+
+> Work in progress
+
+You can use AI to generate ideas for domains and automatically check their availability. All you need is an OpenAI API key, which you can provide using the `-k` or `--openai-key` option or by setting it as an environment variable named `OPENAI_KEY`.
+
+When you're ready, just use the following synax:
+
+```console
+$ domine brainstorm <prompt>
+```
+
+Also, you can specify the model you want to use by providing the `-m <name>` or `--model <name>` option.
+
 
 ## Contribution
 
