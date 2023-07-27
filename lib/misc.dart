@@ -4,6 +4,10 @@ import 'package:domine/models.dart';
 import 'package:tint/tint.dart';
 
 void domainTable(List<CheckedDomain> domains) {
+  if (!stdout.hasTerminal) {
+    return stdout.writeln(domains.join('\n'));
+  }
+
   table([
     for (final domain in domains..sort())
       '${(switch (domain.status) {

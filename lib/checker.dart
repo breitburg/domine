@@ -5,8 +5,8 @@ import 'package:domine/misc.dart';
 import 'package:domine/models.dart';
 import 'package:http/http.dart';
 
-Future<List<CheckedDomain>> batchCheck(Iterable<String> input) async {
-  final futures = <Future>[];
+Stream<CheckedDomain> batchCheck(Iterable<String> input) async* {
+  final checks = <Future>[];
 
   for (final domain in input) {
     for (final variant in expand(domain)) {
@@ -14,15 +14,13 @@ Future<List<CheckedDomain>> batchCheck(Iterable<String> input) async {
       final name = parts.first;
       final tld = parts.sublist(1).join('.');
 
-      futures.add(check(name, tlds: tld == '*' ? asteriskTLDs : [tld]));
+      checks.add(check(name, tlds: tld == '*' ? asteriskTLDs : [tld]));
     }
   }
 
-  final checks = await Future.wait(futures);
-
-  return [
-    for (final check in checks) ...[for (final domain in check) domain]
-  ];
+  await for (final checked in Stream.fromFutures(checks)) {
+    yield* Stream.fromIterable(checked);
+  }
 }
 
 Future<List<CheckedDomain>> check(String name,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:domine/checker.dart';
 import 'package:domine/misc.dart';
+import 'package:domine/models.dart';
 import 'package:domine/spinner.dart';
 import 'package:tint/tint.dart';
 
@@ -32,9 +33,14 @@ class CheckCommand extends Command {
       spinner.start();
     }
 
-    final results = await batchCheck(input);
-    final successes = results.where((e) => e.available);
+    final checked = <CheckedDomain>[];
 
+    await for (final domain in batchCheck(input)) {
+      checked.add(domain);
+      spinner.text = 'Checking availability of ${domain.toString().underline()}...';
+    }
+
+    final successes = checked.where((e) => e.available);
     if (stdout.hasTerminal) {
       spinner.stop();
       stdout.writeln((successes.isNotEmpty
@@ -42,11 +48,8 @@ class CheckCommand extends Command {
               : 'All domains have been taken')
           .dim()
           .underline());
-
-      domainTable(results);
-      return;
     }
 
-    stdout.writeln(successes.join('\n'));
+    domainTable(checked);
   }
 }

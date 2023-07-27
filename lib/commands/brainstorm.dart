@@ -131,9 +131,11 @@ class BrainstormCommand extends Command {
 
     if (candidates.isNotEmpty) {
       spinner.text = 'Checking ${candidates.length} new domains...';
-      final checks = await batchCheck(candidates);
-      _searches.addAll(checks);
+      await for (final domain in batchCheck(candidates)) {
+        _searches.add(domain);
+      }
     }
+
     spinner.stop();
 
     stdout.writeln(

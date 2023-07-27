@@ -1,6 +1,6 @@
 name: domine
 description: Search domains with expressions. Insert numbers, letters, and any TLDs in one query.
-version: 1.0.0+hotfix5
+version: 1.1.0+1
 repository: https://github.com/breitburg/domine
 issue_tracker: https://github.com/breitburg/domine/issues
 
