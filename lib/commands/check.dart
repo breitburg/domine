@@ -20,29 +20,39 @@ class CheckCommand extends Command {
   @override
   String get invocation => 'check <query>';
 
+  CheckCommand() {
+    argParser.addFlag(
+      'retry',
+      abbr: 'r',
+      help: 'Specify whether you want to retry checking if an error occures',
+      defaultsTo: true,
+    );
+  }
+
   @override
   void run() async {
-    final input = (argResults?.rest ?? []).map(
-      (e) => e.replaceAll('"', '').trim(),
-    );
+    final results = argResults!;
+    final input = results.rest.map((e) => e.replaceAll('"', '').trim());
+
     if (input.isEmpty) return stdout.writeln('Domains are empty.');
-
-    final spinner = Spinner('Checking availability...');
-
-    if (stdout.hasTerminal) {
-      spinner.start();
+    if (input.any((e) => e.split('.').length != 2)) {
+      return stdout.writeln('Invalid domains');
     }
 
+    final spinner = Spinner('Heating up...');
     final checked = <CheckedDomain>[];
 
-    await for (final domain in batchCheck(input)) {
+    if (stdout.hasTerminal) spinner.start();
+
+    await for (final domain in batchCheck(input, retry: results['retry'])) {
       checked.add(domain);
-      spinner.text = 'Checking availability of ${domain.toString().underline()}...';
+      spinner.text = 'Checking ${domain.toString().underline()}...';
     }
 
-    final successes = checked.where((e) => e.available);
     if (stdout.hasTerminal) {
       spinner.stop();
+
+      final successes = checked.where((e) => e.available);
       stdout.writeln((successes.isNotEmpty
               ? '${successes.length} ${successes.length > 1 ? 'domains are' : 'domain is'} available'
               : 'All domains have been taken')

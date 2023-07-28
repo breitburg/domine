@@ -21,6 +21,9 @@ class BrainstormCommand extends Command {
   bool get hidden => true;
 
   @override
+  String get invocation => 'brainstorm <prompt>';
+
+  @override
   List<String> get aliases => ['b'];
 
   BrainstormCommand() {
@@ -131,9 +134,7 @@ class BrainstormCommand extends Command {
 
     if (candidates.isNotEmpty) {
       spinner.text = 'Checking ${candidates.length} new domains...';
-      await for (final domain in batchCheck(candidates)) {
-        _searches.add(domain);
-      }
+      await batchCheck(candidates).forEach(_searches.add);
     }
 
     spinner.stop();
