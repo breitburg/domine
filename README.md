@@ -70,7 +70,7 @@ You can use AI to generate ideas for domains and automatically check their avail
 
 All you need is an OpenAI API key, which you can provide using the `--openai-key` option or by setting it as an environment variable named `OPENAI_KEY`.
 
-When you're ready, just use the following synax:
+When you're ready, just use the following syntax:
 
 ```console
 $ domine brainstorm "<prompt>"
