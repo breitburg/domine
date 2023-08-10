@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:domine/commands/brainstorm.dart';
 import 'package:domine/commands/check.dart';
+import 'package:domine/commands/check_file.dart';
 import 'package:domine/singletones.dart';
 
 void main(List<String> arguments) async {
@@ -14,6 +15,7 @@ void main(List<String> arguments) async {
   );
 
   runner.addCommand(CheckCommand());
+  runner.addCommand(CheckFileCommand());
   runner.addCommand(BrainstormCommand());
 
   runner.run(arguments);

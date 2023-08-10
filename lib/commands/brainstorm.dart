@@ -18,9 +18,6 @@ class BrainstormCommand extends Command {
   String get name => 'brainstorm';
 
   @override
-  bool get hidden => true;
-
-  @override
   String get invocation => 'brainstorm <prompt>';
 
   @override

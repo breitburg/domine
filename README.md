@@ -62,9 +62,26 @@ Perform multiple domain queries with a single command using the syntax `domine c
 
 Combine different patterns using the `domine check "l[a-z]n[1-2].*"` command to obtain domains like `lan1.com`, `lan2.com`, `lbn1.com` and more.
 
-### AI
+### Checking From File
 
-> Unstable. Work in progress.
+To check multiple domains from a file, use the `check-file` command and provide a file as follows:
+
+```console
+$ domine check-file domains.txt
+```
+
+The structure of the `domains.txt` file should be as shown:
+
+```
+example.com
+domine.app
+test.co
+...
+```
+
+> It's worth noting that file checking also supports regular expressions.
+
+### AI
 
 You can use AI to generate ideas for domains and automatically check their availability. You can specify the maximum amount of available domains to be found using the `-l` or `--limit <number>` option.
 

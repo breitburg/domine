@@ -1,7 +1,32 @@
 import 'dart:io';
 
+import 'package:domine/checker.dart';
 import 'package:domine/models.dart';
+import 'package:domine/spinner.dart';
 import 'package:tint/tint.dart';
+
+void checkDomainsWithCLI(Iterable<String> input,
+    {required Spinner spinner}) async {
+  final checked = <CheckedDomain>[];
+
+  await for (final domain in batchCheck(input)) {
+    checked.add(domain);
+    spinner.text = '${domain.toString().underline()} was checked...';
+  }
+
+  if (stdout.hasTerminal) {
+    spinner.stop();
+
+    final successes = checked.where((e) => e.available);
+    stdout.writeln((successes.isNotEmpty
+            ? '${successes.length} ${successes.length > 1 ? 'domains are' : 'domain is'} available'
+            : 'All domains have been taken')
+        .dim()
+        .underline());
+  }
+
+  domainTable(checked);
+}
 
 void domainTable(List<CheckedDomain> domains) {
   if (!stdout.hasTerminal) {
