@@ -33,6 +33,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  dio:
+    dependency: "direct main"
+    description:
+      name: dio
+      sha256: ce75a1b40947fea0a0e16ce73337122a86762e38b982e1ccb909daa3b9bc4197
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.3.2"
+  dio_smart_retry:
+    dependency: "direct main"
+    description:
+      name: dio_smart_retry
+      sha256: "1a2d0cf73ab56bf5998b375cda2d51f45c77268e712e4073f232cdc7753a94b2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   fetch_api:
     dependency: transitive
     description:
@@ -50,7 +66,7 @@ packages:
     source: hosted
     version: "1.0.2"
   http:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: http
       sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"

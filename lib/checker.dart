@@ -3,10 +3,9 @@ import 'dart:convert';
 import 'package:domine/constants.dart';
 import 'package:domine/misc.dart';
 import 'package:domine/models.dart';
-import 'package:http/http.dart';
+import 'package:domine/singletones.dart';
 
-Stream<CheckedDomain> batchCheck(Iterable<String> input,
-    {bool retry = true}) async* {
+Stream<CheckedDomain> batchCheck(Iterable<String> input) async* {
   final checks = <Future>[];
 
   for (final domain in input) {
@@ -18,7 +17,7 @@ Stream<CheckedDomain> batchCheck(Iterable<String> input,
       final tld = parts.last;
 
       checks.add(
-        check(name, tlds: tld == '*' ? asteriskTLDs : [tld], retry: retry),
+        check(name, tlds: tld == '*' ? asteriskTLDs : [tld]),
       );
     }
   }
@@ -29,37 +28,20 @@ Stream<CheckedDomain> batchCheck(Iterable<String> input,
 }
 
 Future<List<CheckedDomain>> check(String name,
-    {required List<String> tlds, bool retry = true}) async {
+    {required List<String> tlds}) async {
   final parameters = {
     'tlds': tlds.join(','),
     'hash': hash(name, 27).toString(),
   };
 
-  late final Iterable<Map<String, dynamic>> decoded;
-
-  while (true) {
-    try {
-      decoded = [
-        for (final response in await Future.wait([
-          Uri.https(
-            'instantdomainsearch.com',
-            '/services/zone-names/$name',
-            parameters,
-          ),
-          Uri.https(
-            'instantdomainsearch.com',
-            '/services/dns-names/$name',
-            parameters,
-          ),
-        ].map(get)))
-          if (response.body.isNotEmpty) ...response.body.trim().split('\n'),
-      ].map((e) => jsonDecode(e));
-      break;
-    } catch (_) {
-      if (!retry) rethrow;
-      await Future.delayed(const Duration(seconds: 2));
-    }
-  }
+  final decoded = [
+    for (final response in await Future.wait([
+      'https://instantdomainsearch.com/services/zone-names/$name',
+      'https://instantdomainsearch.com/services/dns-names/$name',
+    ].map((String address) => dio.get(address, queryParameters: parameters))))
+      if (response.data != null && response.data.isNotEmpty)
+        ...response.data.trim().split('\n'),
+  ].map((e) => jsonDecode(e));
 
   return [
     for (final check in decoded)

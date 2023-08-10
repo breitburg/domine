@@ -20,14 +20,7 @@ class CheckCommand extends Command {
   @override
   String get invocation => 'check <query>';
 
-  CheckCommand() {
-    argParser.addFlag(
-      'retry',
-      abbr: 'r',
-      help: 'Specify whether you want to retry checking if an error occures',
-      defaultsTo: true,
-    );
-  }
+  CheckCommand();
 
   @override
   void run() async {
@@ -44,9 +37,10 @@ class CheckCommand extends Command {
 
     if (stdout.hasTerminal) spinner.start();
 
-    await for (final domain in batchCheck(input, retry: results['retry'])) {
+    await for (final domain in batchCheck(input)) {
       checked.add(domain);
-      spinner.text = 'Checking ${domain.toString().underline()}...';
+
+      spinner.text = '${domain.toString().underline()} was checked...';
     }
 
     if (stdout.hasTerminal) {
